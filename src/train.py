@@ -58,10 +58,44 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Train model
 pipeline.fit(X_train, y_train)
 
-# Evaluate model
-preds = pipeline.predict(X_test)
-mae = mean_absolute_error(y_test, preds)
-print(f"Model MAE: {mae:.2f} minutes")
+# =========================
+# BASELINE EVALUATION
+# =========================
+
+# Baseline: always predict mean delivery time
+baseline_prediction = y_train.mean()
+baseline_preds = [baseline_prediction] * len(y_test)
+
+baseline_mae = mean_absolute_error(y_test, baseline_preds)
+
+# =========================
+# MODEL EVALUATION
+# =========================
+
+model_preds = pipeline.predict(X_test)
+model_mae = mean_absolute_error(y_test, model_preds)
+
+print("\n--- Model Evaluation ---")
+print(f"Baseline MAE (Mean Predictor): {baseline_mae:.2f} minutes")
+print(f"Model MAE (RandomForest): {model_mae:.2f} minutes")
+
+# =========================
+# QUALITY GATE (CI CHECK)
+# =========================
+
+MAX_ALLOWED_MAE = 10.0
+
+if model_mae > MAX_ALLOWED_MAE:
+    raise ValueError(
+        f"Model MAE {model_mae:.2f} exceeds allowed threshold {MAX_ALLOWED_MAE}"
+    )
+else:
+    print("Model quality check PASSED")
+
+
+improvement = baseline_mae - model_mae
+print(f"Improvement over baseline: {improvement:.2f} minutes")
+
 
 # Save model
 joblib.dump(pipeline, "delivery_time_model.pkl")
