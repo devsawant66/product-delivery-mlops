@@ -6,6 +6,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 import joblib
+import json
+from datetime import datetime
 
 # Load CSV data
 df = pd.read_csv("data/delivery_data.csv")
@@ -100,3 +102,19 @@ print(f"Improvement over baseline: {improvement:.2f} minutes")
 # Save model
 joblib.dump(pipeline, "delivery_time_model.pkl")
 print("Model saved successfully")
+
+# =========================
+# SAVE METRICS
+# =========================
+
+metrics = {
+    "timestamp": datetime.now().isoformat(),
+    "baseline_mae": round(baseline_mae, 2),
+    "model_mae": round(model_mae, 2),
+    "improvement": round(baseline_mae - model_mae, 2)
+}
+
+with open("metrics.json", "w") as f:
+    json.dump(metrics, f, indent=4)
+
+print("Metrics saved to metrics.json")
