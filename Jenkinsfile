@@ -11,7 +11,7 @@ pipeline {
 
         stage('Train Model') {
             steps {
-                bat '"C:\\Users\\User\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" src/train.py'
+                bat '"C:\\Users\\User\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -u src/train.py'
             }
         }
 
