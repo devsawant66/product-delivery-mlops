@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error
 import joblib
 import json
 from datetime import datetime
-
+print("Training started...")
 # Load CSV data
 df = pd.read_csv("data/delivery_data.csv")
 
@@ -44,7 +44,7 @@ preprocessor = ColumnTransformer(
 )
 
 # Model
-model = RandomForestRegressor(random_state=42)
+RandomForestRegressor(n_estimators=10, random_state=42)
 
 # Pipeline
 pipeline = Pipeline(steps=[
@@ -56,10 +56,10 @@ pipeline = Pipeline(steps=[
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
-
+print("Fitting model...")
 # Train model
 pipeline.fit(X_train, y_train)
-
+print("Training completed.")
 # =========================
 # BASELINE EVALUATION
 # =========================
