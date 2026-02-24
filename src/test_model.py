@@ -1,5 +1,5 @@
 import os
-import pickle
+import joblib
 import numpy as np
 
 
@@ -8,16 +8,14 @@ def test_model_file_exists():
 
 
 def test_model_can_load():
-    with open("delivery_time_model.pkl", "rb") as f:
-        model = pickle.load(f)
+    model = joblib.load("delivery_time_model.pkl")
     assert model is not None, "Model failed to load"
 
 
 def test_model_prediction():
-    with open("delivery_time_model.pkl", "rb") as f:
-        model = pickle.load(f)
+    model = joblib.load("delivery_time_model.pkl")
 
-    # Example dummy input (adjust feature size if needed)
+    # Adjust number of features if needed
     sample_input = np.array([[10, 5, 3]])
 
     prediction = model.predict(sample_input)
