@@ -1,6 +1,7 @@
 import os
 import joblib
 import numpy as np
+import pandas as pd
 
 
 def test_model_file_exists():
@@ -15,8 +16,15 @@ def test_model_can_load():
 def test_model_prediction():
     model = joblib.load("delivery_time_model.pkl")
 
-    # Adjust number of features if needed
-    sample_input = np.array([[10, 5, 3]])
+    sample_input = pd.DataFrame([{
+        "Weather": "Sunny",
+        "Traffic_Level": "Low",
+        "Time_of_Day": "Morning",
+        "Vehicle_Type": "Bike",
+        "Distance_km": 10,
+        "Preparation_Time_min": 5,
+        "Courier_Experience_yrs": 3
+    }])
 
     prediction = model.predict(sample_input)
 
