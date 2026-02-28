@@ -3,23 +3,39 @@ pipeline {
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Install Dependencies') {
-    steps {
-        bat '"C:\\Users\\User\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m pip install -r requirements.txt --no-cache-dir'
-    }
-}
+            steps {
+                bat 'pip install -r requirements.txt'
+            }
+        }
 
         stage('Train Model') {
             steps {
-                bat '"C:\\Users\\User\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -u src/train.py'
+                bat 'python src/train.py'
             }
         }
 
-        stage('Show Metrics') {
+        stage('Quality Gate') {
             steps {
-                bat 'type metrics.json'
+                script {
+                    def metrics = readJSON file: 'metrics.json'
+                    if (metrics.model_mae > 10) {
+                        error("Model MAE too high! Failing build.")
+                    }
+                }
             }
         }
 
+        stage('Start API') {
+            steps {
+                echo 'Model validated successfully.'
+            }
+        }
     }
 }
