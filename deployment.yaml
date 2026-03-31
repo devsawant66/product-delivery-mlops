@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: delivery-api
+  template:
+    metadata:
+      labels:
+        app: delivery-api
+    spec:
+      containers:
+      - name: delivery-api
+        image: mlregistrydev66.azurecr.io/delivery-ml-api:v1
+        ports:
+        - containerPort: 8000

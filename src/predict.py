@@ -1,20 +1,19 @@
 import joblib
 import pandas as pd
 from datetime import datetime
+import os
 
-# Load trained model
-model = joblib.load("delivery_time_model.pkl")
+# Load model safely (important for Azure)
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+model_path = os.path.join(BASE_DIR, "delivery_time_model.pkl")
+
+model = joblib.load(model_path)
+
 
 def auto_generate_features():
-    """
-    Rule-based automated feature generation
-    (Simulates backend systems)
-    """
-
     now = datetime.now()
     hour = now.hour
 
-    # Time of day logic
     if hour < 10:
         time_of_day = "Morning"
         traffic = "Low"
@@ -28,41 +27,29 @@ def auto_generate_features():
         time_of_day = "Night"
         traffic = "Medium"
 
-    # Weather rule (static for now, API later)
     weather = "Clear"
-
-    # Vehicle logic
     vehicle = "Bike" if traffic == "High" else "Car"
-
-    # Order processing time (warehouse rule)
     order_processing_time = 15 if time_of_day in ["Afternoon", "Evening"] else 10
-
-    # Courier experience (assigned by system)
     courier_experience = 3
-
-    # Distance (from warehouse → customer, fixed here)
     distance_km = 12.0
 
     return {
-    "Distance_km": distance_km,
-    "Weather": weather,
-    "Traffic_Level": traffic,
-    "Time_of_Day": time_of_day,
-    "Vehicle_Type": vehicle,
-    "Preparation_Time_min": order_processing_time,  
-    "Courier_Experience_yrs": courier_experience
-}
+        "Distance_km": distance_km,
+        "Weather": weather,
+        "Traffic_Level": traffic,
+        "Time_of_Day": time_of_day,
+        "Vehicle_Type": vehicle,
+        "Preparation_Time_min": order_processing_time,
+        "Courier_Experience_yrs": courier_experience
+    }
 
 
-# Generate automated features
-features = auto_generate_features()
-input_df = pd.DataFrame([features])
+def predict_delivery_time():
+    features = auto_generate_features()
+    input_df = pd.DataFrame([features])
+    prediction = model.predict(input_df)
 
-# Predict
-prediction = model.predict(input_df)
-
-print("\n--- Automated Delivery Prediction (Rule-Based) ---")
-for k, v in features.items():
-    print(f"{k}: {v}")
-
-print(f"\nEstimated Delivery Time: {prediction[0]:.2f} minutes\n")
+    return {
+        "features_used": features,
+        "predicted_delivery_time": round(float(prediction[0]), 2)
+    }

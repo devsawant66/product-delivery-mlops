@@ -1,6 +1,6 @@
 {
-    "timestamp": "2026-02-23T21:34:40.758093",
+    "timestamp": "2026-03-31T09:40:59.300451",
     "baseline_mae": 17.5,
-    "model_mae": 6.84,
-    "improvement": 10.66
+    "model_mae": 7.61,
+    "improvement": 9.89
 }
