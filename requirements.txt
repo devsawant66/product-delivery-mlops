@@ -3,5 +3,11 @@ uvicorn
 streamlit
 pandas
 scikit-learn
+ main
 plotly
 requests
+
+joblib
+openpyxl
+pytest
+ main

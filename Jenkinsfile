@@ -1,6 +1,7 @@
 pipeline {
     agent any
 
+ main
     environment {
         IMAGE_NAME = "delivery-mlops"
         CONTAINER_NAME = "delivery-container"
@@ -62,3 +63,26 @@ pipeline {
         }
     }
 }
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'python -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Test Model') {
+            steps {
+                bat 'python -m pytest -v'
+            }
+        }
+    }
+}
+ main
